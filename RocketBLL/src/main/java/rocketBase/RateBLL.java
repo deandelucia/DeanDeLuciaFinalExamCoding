@@ -1,15 +1,40 @@
 package rocketBase;
 
+import java.util.ArrayList;
+
 import org.apache.poi.ss.formula.functions.*;
+
+import exceptions.RateException;
+import rocketDomain.RateDomainModel;
+
 
 public class RateBLL {
 
 	private static RateDAL _RateDAL = new RateDAL();
 	
-	static double getRate(int GivenCreditScore) 
+	public static double getRate(int GivenCreditScore) throws RateException
 	{
-		//TODO - RocketBLL RateBLL.getRate - make sure you throw any exception
+		//TODO - RateBLL.getRate - make sure you throw any exception
+		ArrayList<RateDomainModel> rates = RateDAL.getAllRates();
 		
+		double rte = 0;
+		
+		for (RateDomainModel r: rates)
+		{
+			if (GivenCreditScore >= r.getiMinCreditScore())
+			{
+			rte = r.getdInterestRate();
+			}
+			
+		}
+		if (rte==0){
+			RateDomainModel rdm = new RateDomainModel();
+			rdm.setiMinCreditScore(GivenCreditScore);
+			throw new RateException(rdm);
+		}
+		return rte;
+		
+			
 		//		Call RateDAL.getAllRates... this returns an array of rates
 		//		write the code that will search the rates to determine the 
 		//		interest rate for the given credit score
@@ -19,7 +44,6 @@ public class RateBLL {
 		
 		//TODO - RocketBLL RateBLL.getRate
 		//			obviously this should be changed to return the determined rate
-		return 0;
 		
 		
 	}
